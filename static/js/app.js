@@ -34,14 +34,46 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
         'Error: Your browser doesn\'t support geolocation.');
 }
 
+(function() {
+    var _dragged;
+    ko.bindingHandlers.drag = {
+        init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
+            var dragElement = $(element);
+            var dragOptions = {
+                helper: 'clone',
+                revert: true,
+                revertDuration: 0,
+                start: function() {
+                    _dragged = ko.utils.unwrapObservable(valueAccessor().value);
+                },
+                cursor: 'default'
+            };
+            dragElement.draggable(dragOptions).disableSelection();
+        }
+    };
+
+    ko.bindingHandlers.drop = {
+        init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
+            var dropElement = $(element);
+            var dropOptions = {
+                drop: function(event, ui) {
+                    valueAccessor().value(_dragged);
+                }
+            };
+            dropElement.droppable(dropOptions);
+        }
+    };
+})();
 
 // Knockout.js ViewModel
 var viewModel = {
-    numberOfClicks : ko.observable(0),
-    incrementClickCounter : function() {
-        var previousCount = this.numberOfClicks();
-        this.numberOfClicks(previousCount + 1);
+    mainWindowDrag : function(MainWindow, event) {
+        var dragOptions = {
+                start: function() {
+                    var _dragged = ko.utils.unwrapObservable(valueAccessor().value);
+                },
+                cursor: 'default'
+            };
+        $('#main-ui-window-bottom').draggable(dragOptions);
     }
-};
-
-ko.applyBindings(viewModel);
+}

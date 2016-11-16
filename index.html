@@ -9,11 +9,11 @@
 	<!-- customized styles -->
     <link rel="stylesheet" type="text/css" href="static/css/styles.css">
 
-    <!-- latest slim minified jQuery 3.x -->
+    <!-- latest minified jQuery 3.x -->
     <script
-  		src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
-  		integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc="
-  		crossorigin="anonymous">
+   		src="https://code.jquery.com/jquery-3.1.1.min.js"
+   		integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+   		crossorigin="anonymous">
   	</script>
 
   	<!-- Knockout.js -->
@@ -23,17 +23,20 @@
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByL-V9JZay1zkJLILE-7aXma_JGOtQ0YA&callback=initMap"
 	    async defer></script>
 
+
+
 </head>
-<body>
+<body onload="ko.applyBindings(viewModel);">
+
 	<div id="map"></div>
 
 	<div id="new-place-input">
 		<input id="new-place-textbox" type="text" name="new-place" placeholder="Add New Location!">
-		<button id="new-place-btn" data-bind="click: incrementClickCounter">+</button>
+		<button id="new-place-btn">+</button>
 	</div>
 
-	<div id="main-ui-window-bottom">
-		<div class="grab-bar" data-bind="text: NumberOfClicks"></div>
+	<div id="main-ui-window-bottom" data-bind="event: { drag: mainWindowDrag }">
+		<div class="grab-bar"></div>
 		<input id="places-search-box" type="text" name="search-places" placeholder="&#128269; Search for a place or address">
 		<hr>
 	</div>
