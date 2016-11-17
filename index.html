@@ -26,19 +26,25 @@
 
 
 </head>
-<body onload="ko.applyBindings(viewModel);">
+<body>
 
 	<div id="map"></div>
 
-	<div id="new-place-input">
+	<form id="new-place-input" data-bind="submit: addNewPlace">
 		<input id="new-place-textbox" type="text" name="new-place" placeholder="Add New Location!">
 		<button id="new-place-btn">+</button>
-	</div>
+	</form>
 
-	<div id="main-ui-window-bottom" data-bind="event: { drag: mainWindowDrag }">
-		<div class="grab-bar"></div>
+	<div id="main-ui-window-bottom">
+		<div class="main-window-controller" data-bind="click: mainWindowControl">
+			<div class="grab-bar" ></div>
+		</div>
+		
 		<input id="places-search-box" type="text" name="search-places" placeholder="&#128269; Search for a place or address">
 		<hr>
+		<ul id="places-list" data-bind="foreach: places">
+			<li class="place-title" data-bind="text: $data.title"></li>
+		</ul>
 	</div>
 
 	<script src="static/js/app.js"></script>
