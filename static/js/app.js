@@ -1,4 +1,30 @@
-// initiates the map with user's current location.
+// Caches repeatedly accessed objects.
+var $mainWindow = $('#main-ui-window-bottom');
+var mainWindowClosedPos = $mainWindow.offset();
+var $newPlaceTextbox = $('#new-place-textbox');
+
+/***************************
+GLOBAL FUNCTION DEFINITIONS:
+****************************/
+function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+    infoWindow.setPosition(pos);
+    infoWindow.setContent(browserHasGeolocation ?
+        'Error: The Geolocation service failed.' :
+        'Error: Your browser doesn\'t support geolocation.');
+}
+
+/*****************
+MODEL DEFINITIONS:
+******************/
+// holds all the data for a single place.
+function Place(title, pos) {
+    this.title = title;
+    this.pos = pos;
+}
+
+/***********
+RUNS THE APP
+************/
 function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: -25.363, lng: 131.044},
@@ -7,7 +33,8 @@ function initMap() {
     });
     var infoWindow = new google.maps.InfoWindow({map: map});
 
-    // Try HTML5 geolocation.
+    // Try HTML5 geolocation to find users location.
+    // If geolocation works, create a new Place() call "Current Location".
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
             var pos = {
@@ -19,6 +46,8 @@ function initMap() {
             infoWindow.setContent('Location found.');
             map.setCenter(pos);
             viewModel.mapCenter(pos);
+            var Home = new Place("Current Location", pos);
+            viewModel.places.push(Home);
         }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
         });
@@ -28,10 +57,14 @@ function initMap() {
     }
 
 
-    // Knockout.js ViewModel
+/********************
+KNOCKOUT.JS VIEWMODEL
+*********************/
+// NOTE: ViewModel must be contained within the initMap function
+//       in order to make changes to the map object.
     var viewModel = {
         mapCenter : ko.observable(),
-        places : ko.observableArray(),
+        // Main Window Controller
         mainWindowState : ko.observable(false),
         mainWindowControl : function() {
             if (this.mainWindowState() === false) {
@@ -46,8 +79,16 @@ function initMap() {
                 this.mainWindowState(false);
             }
         },
-        addNewPlace : function(formElement) {
-            var title = $newPlaceTextbox.val();
+        // New Places Search Handling.
+        newPlaceSearchResults : ko.observableArray(),
+        places : ko.observableArray(),
+        newPlacesSearchValue : ko.observable("Add New Location!"),
+        searchNewPlaces : function() {
+            searchPlaces(this.newPlacesSearchValue());
+            $('.new-place-search-list').fadeIn();
+        },
+        addNewPlace : function() {
+            $(".new-place-search-list").fadeOut();
             var myLatlng = new google.maps.LatLng(-25.363882,131.044922);
             var marker = new google.maps.Marker({
                 position: myLatlng,
@@ -58,33 +99,34 @@ function initMap() {
                 map.setZoom(8);
                 map.setCenter(marker.getPosition());
             });
-            
+
             var newPlace = new Place(title, myLatlng);
             this.places.push(newPlace);
-            // To add the marker to the map, call setMap();
             marker.setMap(map);
             map.panTo(myLatlng);
         }
     }
-    ko.applyBindings(viewModel);  
-}
+    ko.applyBindings(viewModel);
 
-function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-    infoWindow.setPosition(pos);
-    infoWindow.setContent(browserHasGeolocation ?
-        'Error: The Geolocation service failed.' :
-        'Error: Your browser doesn\'t support geolocation.');
-}
+    // Uses Google's PlacesService API to search locations
+    // that match the string given by the user.
+    function searchPlaces(searchString) {
+        var request = {
+            location: viewModel.mapCenter(),
+            radius: '500',
+            query: searchString
+        };
 
-// Caches repeatedly accessed objects.
-var $mainWindow = $('#main-ui-window-bottom');
-var mainWindowClosedPos = $mainWindow.offset();
-var $newPlaceTextbox = $('#new-place-textbox');
+        service = new google.maps.places.PlacesService(map);
+        service.textSearch(request, returnPlacesResults);
+    }
 
-
-// MODEL DEFINITIONS:
-function Place(title, pos) {
-	// holds all the data for a single place.
-    this.title = title;
-	this.pos = pos;
+    function returnPlacesResults(results, status) {
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+            viewModel.newPlaceSearchResults.removeAll();
+            for (var i = 0; i < results.length; i++) {
+                viewModel.newPlaceSearchResults.push(results[i]);
+            }
+        }
+    }
 }

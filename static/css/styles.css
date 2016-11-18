@@ -106,6 +106,36 @@ html, body {
 	color: #7c7c7c;
 }
 
+.new-place-search-list {
+	position: fixed;
+	display: none;
+	top: calc(5% + 40px);
+	width: 90%;
+	margin: 0px;
+	padding: 0px;
+	left: 5%;
+	height: 50%;
+	background-color: white;
+	border-radius: 5px;
+	overflow-y: scroll;
+	z-index: 9999;
+	-webkit-box-shadow: 0px 0px 25px -6px rgba(0,0,0,0.81);
+    -moz-box-shadow: 0px 0px 25px -6px rgba(0,0,0,0.81);
+    box-shadow: 0px 0px 25px -6px rgba(0,0,0,0.81);
+}
+
+.new-place-search-list li {
+	list-style: none;
+	margin: auto;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding: 5px;
+	width: 90%;
+	font-size: 5px;
+	background-color: white;
+	border-bottom: 1px solid lightgrey;
+}
+
 .main-window-controller {
 	width: 100%;
 	margin: 0px;

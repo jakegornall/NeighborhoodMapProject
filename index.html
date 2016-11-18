@@ -20,20 +20,24 @@
   	<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-min.js"></script>
 
   	<!-- Google Maps API -->
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByL-V9JZay1zkJLILE-7aXma_JGOtQ0YA&callback=initMap"
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByL-V9JZay1zkJLILE-7aXma_JGOtQ0YA&callback=initMap&libraries=places"
 	    async defer></script>
-
-
-
 </head>
 <body>
 
 	<div id="map"></div>
 
-	<form id="new-place-input" data-bind="submit: addNewPlace">
-		<input id="new-place-textbox" type="text" name="new-place" placeholder="Add New Location!">
+	<form id="new-place-input" data-bind="submit: searchNewPlaces">
+		<input id="new-place-textbox" type="text" data-bind="textInput: newPlacesSearchValue" name="new-place">
 		<button id="new-place-btn">+</button>
 	</form>
+	<ul class="new-place-search-list" data-bind="foreach: newPlaceSearchResults">
+		<li>
+			<img data-bind="attr: { src: $data.icon }" width="20px" style="float: left;">
+			<h1 data-bind="text: $data.name"></h1>
+			<h2 data-bind="text: $data.formatted_address"></h2>
+		</li>
+	</ul>
 
 	<div id="main-ui-window-bottom">
 		<div class="main-window-controller" data-bind="click: mainWindowControl">
