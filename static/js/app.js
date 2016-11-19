@@ -1,12 +1,16 @@
-// Caches repeatedly accessed objects.
+/*********************************
+CACHE REPEATEDLY ACCESSED OBJECTS
+**********************************/
 var $mainWindow = $('#main-ui-window-bottom');
 var mainWindowClosedPos = $mainWindow.offset();
 var $newPlaceTextbox = $('#new-place-textbox');
+var $newPlaceSearchList = $(".new-place-search-list");
 
 /***************************
 GLOBAL FUNCTION DEFINITIONS:
 ****************************/
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+    // handles errors when attempting geolocation for Google maps.
     infoWindow.setPosition(pos);
     infoWindow.setContent(browserHasGeolocation ?
         'Error: The Geolocation service failed.' :
@@ -17,18 +21,21 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 MODEL DEFINITIONS:
 ******************/
 // holds all the data for a single place.
-function Place(title, pos) {
+function Place(title, pos, viewport) {
     this.title = title;
     this.pos = pos;
+    this.viewport = viewport;
 }
 
-/***********
+/****************************
+CREATES THE GOOGLE MAP OBJECT
+CONTAINS THE VIEWMODEL
 RUNS THE APP
-************/
+*****************************/
 function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: -25.363, lng: 131.044},
-        zoom: 6,
+        zoom: 12,
         disableDefaultUI: true
     });
     var infoWindow = new google.maps.InfoWindow({map: map});
@@ -82,35 +89,38 @@ KNOCKOUT.JS VIEWMODEL
         // New Places Search Handling.
         newPlaceSearchResults : ko.observableArray(),
         places : ko.observableArray(),
-        newPlacesSearchValue : ko.observable("Add New Location!"),
+        newPlacesSearchValue : ko.observable(),
         searchNewPlaces : function() {
             searchPlaces(this.newPlacesSearchValue());
-            $('.new-place-search-list').fadeIn();
+            $newPlaceSearchList.fadeIn();
         },
-        addNewPlace : function() {
-            $(".new-place-search-list").fadeOut();
-            var myLatlng = new google.maps.LatLng(-25.363882,131.044922);
+        addNewPlace : function(place) {
+            $newPlaceSearchList.fadeOut();
+            var Latlng = place.geometry.location;
             var marker = new google.maps.Marker({
-                position: myLatlng,
-                title:"Hello World!"
+                position: Latlng,
+                title: place.name
             });
 
             marker.addListener('click', function() {
-                map.setZoom(8);
+                map.setZoom(13);
                 map.setCenter(marker.getPosition());
             });
 
-            var newPlace = new Place(title, myLatlng);
-            this.places.push(newPlace);
+            var newPlace = new Place(place.name, Latlng);
+            viewModel.places.push(newPlace);
             marker.setMap(map);
-            map.panTo(myLatlng);
+            map.panTo(Latlng);
         }
     }
     ko.applyBindings(viewModel);
 
-    // Uses Google's PlacesService API to search locations
-    // that match the string given by the user.
+    /********************************************************
+    These functions use Google's PlacesService API to
+    search locations that match the string given by the user.
+    *********************************************************/
     function searchPlaces(searchString) {
+        // prepares and sends a search request to Google's PlacesService API.
         var request = {
             location: viewModel.mapCenter(),
             radius: '500',
@@ -122,6 +132,8 @@ KNOCKOUT.JS VIEWMODEL
     }
 
     function returnPlacesResults(results, status) {
+        // populates the newPlacesSearchResults array with the results
+        // from a Google PlacesService API call.
         if (status == google.maps.places.PlacesServiceStatus.OK) {
             viewModel.newPlaceSearchResults.removeAll();
             for (var i = 0; i < results.length; i++) {
@@ -129,4 +141,5 @@ KNOCKOUT.JS VIEWMODEL
             }
         }
     }
+    /*************************************************************/
 }

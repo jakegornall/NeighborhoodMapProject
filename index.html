@@ -28,14 +28,16 @@
 	<div id="map"></div>
 
 	<form id="new-place-input" data-bind="submit: searchNewPlaces">
-		<input id="new-place-textbox" type="text" data-bind="textInput: newPlacesSearchValue" name="new-place">
+		<input id="new-place-textbox" type="text" data-bind="value: newPlacesSearchValue" name="new-place" placeholder="Add New Location!">
 		<button id="new-place-btn">+</button>
 	</form>
 	<ul class="new-place-search-list" data-bind="foreach: newPlaceSearchResults">
-		<li>
-			<img data-bind="attr: { src: $data.icon }" width="20px" style="float: left;">
+		<li data-bind="click: $parent.addNewPlace">
+			<img data-bind="attr: { src: $data.icon }">
 			<h1 data-bind="text: $data.name"></h1>
 			<h2 data-bind="text: $data.formatted_address"></h2>
+			<h2 data-bind="visible: $data.opening_hours.open_now">OPEN NOW!</h2>
+			<h2 data-bind="text: $data.rating"></h2>
 		</li>
 	</ul>
 
