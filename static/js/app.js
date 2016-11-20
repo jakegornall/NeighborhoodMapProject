@@ -21,10 +21,8 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 MODEL DEFINITIONS:
 ******************/
 // holds all the data for a single place.
-function Place(title, pos, viewport) {
-    this.title = title;
-    this.pos = pos;
-    this.viewport = viewport;
+function Place(PlacesObj) {
+    this.PlacesObj = PlacesObj;
 }
 
 /****************************
@@ -52,8 +50,13 @@ function initMap() {
             infoWindow.setPosition(pos);
             infoWindow.setContent('Location found.');
             map.setCenter(pos);
-            viewModel.mapCenter(pos);
-            var Home = new Place("Current Location", pos);
+            var newPlace = {
+            	name: "Current Location",
+            	geometry: {
+            		location: pos
+            	}
+            }
+            var Home = new Place(newPlace);
             viewModel.places.push(Home);
         }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
@@ -70,7 +73,7 @@ KNOCKOUT.JS VIEWMODEL
 // NOTE: ViewModel must be contained within the initMap function
 //       in order to make changes to the map object.
     var viewModel = {
-        mapCenter : ko.observable(),
+
         // Main Window Controller
         mainWindowState : ko.observable(false),
         mainWindowControl : function() {
@@ -86,7 +89,8 @@ KNOCKOUT.JS VIEWMODEL
                 this.mainWindowState(false);
             }
         },
-        // New Places Search Handling.
+
+        // New Places Search Event Handling.
         newPlaceSearchResults : ko.observableArray(),
         places : ko.observableArray(),
         newPlacesSearchValue : ko.observable(),
@@ -107,10 +111,19 @@ KNOCKOUT.JS VIEWMODEL
                 map.setCenter(marker.getPosition());
             });
 
-            var newPlace = new Place(place.name, Latlng);
+            var newPlace = new Place(place);
             viewModel.places.push(newPlace);
             marker.setMap(map);
             map.panTo(Latlng);
+        },
+
+        // Places list event handling.
+        goToPlace : function(place) {
+        	viewModel.mainWindowControl();
+        	map.panTo(place.PlacesObj.geometry.location);
+        },
+        deletePlace : function(place) {
+        	viewModel.places.pop(place);
         }
     }
     ko.applyBindings(viewModel);
@@ -122,7 +135,7 @@ KNOCKOUT.JS VIEWMODEL
     function searchPlaces(searchString) {
         // prepares and sends a search request to Google's PlacesService API.
         var request = {
-            location: viewModel.mapCenter(),
+            location: map.getCenter(),
             radius: '500',
             query: searchString
         };

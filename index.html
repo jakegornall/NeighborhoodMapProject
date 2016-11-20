@@ -49,7 +49,8 @@
 		<input id="places-search-box" type="text" name="search-places" placeholder="&#128269; Search for a place or address">
 		<hr>
 		<ul id="places-list" data-bind="foreach: places">
-			<li class="place-title" data-bind="text: $data.title"></li>
+			<li class="place-title" data-bind="click: $parent.goToPlace, text: $data.PlacesObj.name"></li>
+			<button data-bind="click: $parent.deletePlace">DELETE</button>
 		</ul>
 	</div>
 
