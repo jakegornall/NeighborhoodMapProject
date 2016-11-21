@@ -49,8 +49,18 @@
 		<input id="places-search-box" type="text" name="search-places" placeholder="&#128269; Search for a place or address">
 		<hr>
 		<ul id="places-list" data-bind="foreach: places">
-			<li class="place-title" data-bind="click: $parent.goToPlace, text: $data.PlacesObj.name"></li>
-			<button data-bind="click: $parent.deletePlace">DELETE</button>
+			<li>
+				<h1 data-bind="text: $data.PlacesObj.name, click: $parent.goToPlace"></h1>
+				<button data-bind="click: $parent.openInstaWindow">Instagram Images</button>
+				<button data-bind="click: $parent.openInfoWindow">About</button>
+				<button data-bind="click: $parent.deletePlace">DELETE</button>
+				<div class="place-info-window" data-bind="visible: $data.infoWindowVisible">
+					This is where Wiki articles for this place go.
+				</div>
+				<div class="insta-window" data-bind="visible: $data.instaWindowVisible">
+					This is where instagram pics go.
+				</div>
+			</li>
 		</ul>
 	</div>
 

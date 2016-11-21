@@ -1,6 +1,39 @@
-/*********************************
-CACHE REPEATEDLY ACCESSED OBJECTS
-**********************************/
+/***********************
+NEIGHBORHOOD MAP PROJECT
+************************/
+//  WRITTEN BY: JAKE GORNALL
+//  
+//  WRITTEN FOR: UDACITY - FULL STACK WEB DEVELOPMENT NANODEGREE
+//  
+//  DESCRIPTION: 
+//  At runtime, this application attempts to find the user's current location. 
+//  once found, the user is able to search and save nearby places as well as
+//  access a variety of information about each location via various APIs.
+//
+//  FRAMEWORKS:
+//  - Knockout.js => MVVM
+//
+//  LIBRARIES:
+//  - jQuery 3.1.1
+//
+//  APIs:
+//  - Google Maps
+//  - Google PlacesService
+//
+//  THE CODE IS BROKEN INTO THE FOLLOWING SECTION (IN THIS ORDER AND HIERARCHY):
+//  - Cache Repeatedly Accessed Objects/Elements
+//  - Global Function Definitions
+//  - Model Definitions
+//  - Google Map Function (Contains the viewModel and runs the app)
+//      - Knockout.js ViewModel
+//      - Google placesService API supporting functions
+
+
+
+
+/*****************************************
+CACHE REPEATEDLY ACCESSED OBJECTS/ELEMENTS
+******************************************/
 var $mainWindow = $('#main-ui-window-bottom');
 var mainWindowClosedPos = $mainWindow.offset();
 var $newPlaceTextbox = $('#new-place-textbox');
@@ -9,6 +42,7 @@ var $newPlaceSearchList = $(".new-place-search-list");
 /***************************
 GLOBAL FUNCTION DEFINITIONS:
 ****************************/
+// any functions that don't need to access the viewModel or maps object.
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     // handles errors when attempting geolocation for Google maps.
     infoWindow.setPosition(pos);
@@ -24,13 +58,15 @@ function Place(PlacesObj, marker) {
 	// holds all the data for a single place.
     this.PlacesObj = PlacesObj;
     this.marker = marker;
+    this.infoWindowVisible = ko.observable(false);
+    this.instaWindowVisible = ko.observable(false);
 }
 
-/****************************
-CREATES THE GOOGLE MAP OBJECT
+/******************************
+CREATES THE GOOGLE MAP FUNCTION
 CONTAINS THE VIEWMODEL
 RUNS THE APP
-*****************************/
+*******************************/
 function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: -25.363, lng: 131.044},
@@ -138,6 +174,14 @@ KNOCKOUT.JS VIEWMODEL
         	if (viewModel.selectedPlace() === place) {
         		viewModel.selectedPlace(null);
         	}
+        },
+        openInstaWindow : function(place) {
+            place.infoWindowVisible(false);
+            place.instaWindowVisible(true);
+        },
+        openInfoWindow : function(place) {
+            place.infoWindowVisible(true);
+            place.instaWindowVisible(false);
         }
     }
     ko.applyBindings(viewModel);
