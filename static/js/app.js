@@ -20,9 +20,10 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 /*****************
 MODEL DEFINITIONS:
 ******************/
-// holds all the data for a single place.
-function Place(PlacesObj) {
+function Place(PlacesObj, marker) {
+	// holds all the data for a single place.
     this.PlacesObj = PlacesObj;
+    this.marker = marker;
 }
 
 /****************************
@@ -73,7 +74,7 @@ KNOCKOUT.JS VIEWMODEL
 // NOTE: ViewModel must be contained within the initMap function
 //       in order to make changes to the map object.
     var viewModel = {
-
+    	selectedPlace : ko.observable(),
         // Main Window Controller
         mainWindowState : ko.observable(false),
         mainWindowControl : function() {
@@ -100,7 +101,9 @@ KNOCKOUT.JS VIEWMODEL
         },
         addNewPlace : function(place) {
             $newPlaceSearchList.fadeOut();
+
             var Latlng = place.geometry.location;
+
             var marker = new google.maps.Marker({
                 position: Latlng,
                 title: place.name
@@ -109,11 +112,17 @@ KNOCKOUT.JS VIEWMODEL
             marker.addListener('click', function() {
                 map.setZoom(13);
                 map.setCenter(marker.getPosition());
+                marker.setAnimation(google.maps.Animation.BOUNCE);
+                setTimeout(function() {
+                	marker.setAnimation(null);
+                }, 2000);
             });
 
-            var newPlace = new Place(place);
+            var newPlace = new Place(place, marker);
             viewModel.places.push(newPlace);
+            viewModel.selectedPlace(newPlace);
             marker.setMap(map);
+            marker.setAnimation(google.maps.Animation.DROP);
             map.panTo(Latlng);
         },
 
@@ -121,9 +130,14 @@ KNOCKOUT.JS VIEWMODEL
         goToPlace : function(place) {
         	viewModel.mainWindowControl();
         	map.panTo(place.PlacesObj.geometry.location);
+        	viewModel.selectedPlace(place);
         },
         deletePlace : function(place) {
         	viewModel.places.pop(place);
+        	place.marker.setMap(null);
+        	if (viewModel.selectedPlace() === place) {
+        		viewModel.selectedPlace(null);
+        	}
         }
     }
     ko.applyBindings(viewModel);
