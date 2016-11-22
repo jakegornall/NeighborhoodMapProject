@@ -39,10 +39,12 @@ var mainWindowClosedPos = $mainWindow.offset();
 var $newPlaceTextbox = $('#new-place-textbox');
 var $newPlaceSearchList = $(".new-place-search-list");
 
+
 /***************************
 GLOBAL FUNCTION DEFINITIONS:
 ****************************/
 // any functions that don't need to access the viewModel or maps object.
+
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     // handles errors when attempting geolocation for Google maps.
     infoWindow.setPosition(pos);
@@ -50,6 +52,56 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
         'Error: The Geolocation service failed.' :
         'Error: Your browser doesn\'t support geolocation.');
 }
+
+function getYelpAccessToken() {
+    var appID = "Cn8JlZk5S3buaXtfvtf2Pg";
+    var clientSecret = "eVBXSlQj7ybvhREZTlMMyoWnPEL2C1FLcKZLlIP05v6GYj2e8YaQNHfNREPI062V";
+    var url = "https://api.yelp.com/oauth2/token";
+    var data = "client_id=" + appID + "&client_secret=" + clientSecret;
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: data,
+        success: function(response) {
+            console.log(response)
+            return response;
+        },
+        failure: function() {
+            return false;
+        }
+    });
+}
+
+function yelpSearch(SearchTerm, lat, lng) {
+    var Token = getYelpAccessToken();
+    if (Token) {
+        var api = "https://api.yelp.com/v3/businesses/search?";
+        var term = "term=" + SearchTerm + "&";
+        var latLng = "latitude=" + lat + "&longitude=" + lng;
+        var url = api + term + latLng;
+    
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "json",
+            headers: {
+                bearer: Token.token_type,
+                access_token: Token.access_token
+            },
+            success: function(response) {
+                return response;
+            },
+            failure: function() {
+                console.log("yelp search unavailable...")
+                return "Yelp search unavailable...";
+            }
+        });    
+    } else {
+        console.log("Unable to get access token from yelp...")
+    }
+    
+}
+
 
 /*****************
 MODEL DEFINITIONS:
@@ -61,6 +113,7 @@ function Place(PlacesObj, marker) {
     this.infoWindowVisible = ko.observable(false);
     this.instaWindowVisible = ko.observable(false);
 }
+
 
 /******************************
 CREATES THE GOOGLE MAP FUNCTION
@@ -85,7 +138,7 @@ function initMap() {
             };
 
             infoWindow.setPosition(pos);
-            infoWindow.setContent('Location found.');
+            infoWindow.setContent('Current Location');
             map.setCenter(pos);
             var newPlace = {
             	name: "Current Location",
@@ -93,8 +146,9 @@ function initMap() {
             		location: pos
             	}
             }
-            var Home = new Place(newPlace);
+            var Home = new Place(newPlace, infoWindow);
             viewModel.places.push(Home);
+            viewModel.selectedPlace(Home);
         }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
         });
@@ -145,16 +199,18 @@ KNOCKOUT.JS VIEWMODEL
                 title: place.name
             });
 
+            var newPlace = new Place(place, marker);
+
             marker.addListener('click', function() {
+                viewModel.selectedPlace(newPlace);
                 map.setZoom(13);
                 map.setCenter(marker.getPosition());
                 marker.setAnimation(google.maps.Animation.BOUNCE);
                 setTimeout(function() {
-                	marker.setAnimation(null);
+                    marker.setAnimation(null);
                 }, 2000);
             });
 
-            var newPlace = new Place(place, marker);
             viewModel.places.push(newPlace);
             viewModel.selectedPlace(newPlace);
             marker.setMap(map);
@@ -175,13 +231,9 @@ KNOCKOUT.JS VIEWMODEL
         		viewModel.selectedPlace(null);
         	}
         },
-        openInstaWindow : function(place) {
-            place.infoWindowVisible(false);
-            place.instaWindowVisible(true);
-        },
-        openInfoWindow : function(place) {
-            place.infoWindowVisible(true);
-            place.instaWindowVisible(false);
+        yelpInfo : function(place) {
+            var 
+            var yelpResponse = yelpSearch();
         }
     }
     ko.applyBindings(viewModel);
