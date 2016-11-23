@@ -37,9 +37,12 @@
 	</form>
 
 	<!-- Currently Selected Place Info -->
-	<div id="current-place" data-bind="with: selectedPlace">
-		<h1 data-bind="text: $data.PlacesObj.name"></h1>
-		<h2 data-bind="text: $parent.yelpInfo"></h2>
+	<div id="current-place">
+		<div data-bind="with: selectedPlace">
+			<h1 data-bind="text: $data.PlacesObj.name"></h1>
+			<p data-bind="text: $data.PlacesObj.formatted_address"></p>
+		</div>
+		<h2></h2>
 	</div>
 
 	<!-- New Place Search List -->
@@ -48,7 +51,6 @@
 			<img data-bind="attr: { src: $data.icon }">
 			<h1 data-bind="text: $data.name"></h1>
 			<h2 data-bind="text: $data.formatted_address"></h2>
-			<h2 data-bind="visible: $data.opening_hours.open_now">OPEN NOW!</h2>
 			<h2 data-bind="text: $data.rating"></h2>
 		</li>
 	</ul>
@@ -65,7 +67,7 @@
 		<ul id="places-list" data-bind="foreach: places">
 			<li>
 				<h1 data-bind="text: $data.PlacesObj.name, click: $parent.goToPlace"></h1>
-				<h2 data-bind="texdt: $data.PlacesObj.formatted_address"></h2>
+				<p data-bind="text: $data.PlacesObj.formatted_address"></p>
 				<button data-bind="click: $parent.deletePlace">DELETE</button>
 			</li>
 		</ul>

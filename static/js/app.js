@@ -53,55 +53,6 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
         'Error: Your browser doesn\'t support geolocation.');
 }
 
-function getYelpAccessToken() {
-    var appID = "Cn8JlZk5S3buaXtfvtf2Pg";
-    var clientSecret = "eVBXSlQj7ybvhREZTlMMyoWnPEL2C1FLcKZLlIP05v6GYj2e8YaQNHfNREPI062V";
-    var url = "https://api.yelp.com/oauth2/token";
-    var data = "client_id=" + appID + "&client_secret=" + clientSecret;
-    $.ajax({
-        type: "POST",
-        url: url,
-        data: data,
-        success: function(response) {
-            console.log(response)
-            return response;
-        },
-        failure: function() {
-            return false;
-        }
-    });
-}
-
-function yelpSearch(SearchTerm, lat, lng) {
-    var Token = getYelpAccessToken();
-    if (Token) {
-        var api = "https://api.yelp.com/v3/businesses/search?";
-        var term = "term=" + SearchTerm + "&";
-        var latLng = "latitude=" + lat + "&longitude=" + lng;
-        var url = api + term + latLng;
-    
-        $.ajax({
-            type: "GET",
-            url: url,
-            dataType: "json",
-            headers: {
-                bearer: Token.token_type,
-                access_token: Token.access_token
-            },
-            success: function(response) {
-                return response;
-            },
-            failure: function() {
-                console.log("yelp search unavailable...")
-                return "Yelp search unavailable...";
-            }
-        });    
-    } else {
-        console.log("Unable to get access token from yelp...")
-    }
-    
-}
-
 
 /*****************
 MODEL DEFINITIONS:
@@ -110,8 +61,6 @@ function Place(PlacesObj, marker) {
 	// holds all the data for a single place.
     this.PlacesObj = PlacesObj;
     this.marker = marker;
-    this.infoWindowVisible = ko.observable(false);
-    this.instaWindowVisible = ko.observable(false);
 }
 
 
@@ -164,7 +113,7 @@ KNOCKOUT.JS VIEWMODEL
 // NOTE: ViewModel must be contained within the initMap function
 //       in order to make changes to the map object.
     var viewModel = {
-    	selectedPlace : ko.observable(),
+    	selectedPlace : ko.observable({PlacesObj: {name: "No Locations Selected."}}),
         // Main Window Controller
         mainWindowState : ko.observable(false),
         mainWindowControl : function() {
@@ -230,13 +179,10 @@ KNOCKOUT.JS VIEWMODEL
         	if (viewModel.selectedPlace() === place) {
         		viewModel.selectedPlace(null);
         	}
-        },
-        yelpInfo : function(place) {
-            var 
-            var yelpResponse = yelpSearch();
         }
     }
     ko.applyBindings(viewModel);
+
 
     /********************************************************
     These functions use Google's PlacesService API to

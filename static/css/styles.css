@@ -104,6 +104,7 @@ html, body {
 
 #main-ui-window-bottom {
 	position: fixed;
+	opacity: .9;
 	z-index: 9999;
 	top: calc(100% - 50px);
 	left: 0px;
