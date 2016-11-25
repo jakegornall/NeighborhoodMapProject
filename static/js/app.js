@@ -61,6 +61,7 @@ function Place(PlacesObj, marker) {
 	// holds all the data for a single place.
     this.PlacesObj = PlacesObj;
     this.marker = marker;
+    this.searchMatched = ko.observable(true);
 }
 
 
@@ -167,6 +168,22 @@ KNOCKOUT.JS VIEWMODEL
             map.panTo(Latlng);
         },
 
+        // Places search filter
+        placesFilterText: ko.observable(),
+        filterLocations: ko.computed(function() {
+        	console.log("search triggered")
+	        for (i = 0; i < viewModel.places.length; i++) {
+	        	var searchString = viewModel.placesFilterText();
+		    	var place = viewModel.places[i];
+		    	console.log(place)
+		    	if (place.PlacesObj.name.indexOf(searchString) === -1 && place.PlacesObj.formatted_address.indexOf(searchString) === -1) {
+		    		place.searchMatched(false);
+		    	} else {
+		    		place.searchMatched(true);
+		    	}
+	    	}
+        }),
+
         // Places list event handling.
         goToPlace : function(place) {
         	viewModel.mainWindowControl();
@@ -182,6 +199,23 @@ KNOCKOUT.JS VIEWMODEL
         }
     }
     ko.applyBindings(viewModel);
+
+
+    /*************************************************
+    filters places list as user types into search box.
+    **************************************************/
+    // function filterLocations(searchString) {
+    // 	for (i = 0; i < viewModel.places.length; i++) {
+    // 		var place = viewModel.places[i];
+    // 		console.log(place)
+    // 		if (place.PlacesObj.name.indexOf(searchString) === -1 && place.PlacesObj.formatted_address.indexOf(searchString) === -1) {
+    // 			place.searchMatched = false;
+    // 		} else {
+    // 			place.searchMatched = true;
+    // 		}
+    // 	}
+    // };
+    // filterLocations(viewModel.placesFilterText());
 
 
     /********************************************************
