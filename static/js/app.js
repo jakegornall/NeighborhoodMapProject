@@ -45,8 +45,8 @@ GLOBAL FUNCTION DEFINITIONS:
 ****************************/
 // any functions that don't need to access the viewModel or maps object.
 
-function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-    // handles errors when attempting geolocation for Google maps.
+// handles errors when attempting geolocation for Google maps.
+function handleLocationError(browserHasGeolocation, infoWindow, pos) { 
     infoWindow.setPosition(pos);
     infoWindow.setContent(browserHasGeolocation ?
         'Error: The Geolocation service failed.' :
@@ -57,8 +57,8 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 /*****************
 MODEL DEFINITIONS:
 ******************/
+// holds all the data for a single place.
 function Place(PlacesObj, marker) {
-	// holds all the data for a single place.
 	this.id = PlacesObj.id;
     this.PlacesObj = PlacesObj;
     this.marker = marker;
@@ -115,7 +115,7 @@ KNOCKOUT.JS VIEWMODEL
 // NOTE: ViewModel must be contained within the initMap function
 //       in order to make changes to the map object.
     var viewModel = {
-    	selectedPlace : ko.observable({PlacesObj: {name: "No Locations Selected."}}),
+    	selectedPlace : ko.observable(null),
         // Main Window Controller
         mainWindowState : ko.observable(false),
         mainWindowControl : function() {
@@ -186,15 +186,14 @@ KNOCKOUT.JS VIEWMODEL
         }
     }
 
-
-    /**********************
-    Deletes Place List Item
-    ***********************/
+    /***************************
+    VIEWMODEL EXTENDED FUNCTIONS
+    /***************************/
+    //Deletes Place List Item
     viewModel.deletePlace = function(place) {
     	var id = place.id;
         for (i = 0; i < viewModel.places().length; i++) {
         	if (viewModel.places()[i].id === id) {
-        		console.log("CALLED")
         		place.marker.setMap(null);
         		viewModel.places.splice(i, 1);
         		if (viewModel.selectedPlace() === place) {
@@ -205,26 +204,27 @@ KNOCKOUT.JS VIEWMODEL
         }
     }
 
-
-    /*************************************************
-    filters places list as user types into search box.
-    **************************************************/
+    // filters places list as user types into search box.
     viewModel.filterLocations = ko.computed(function() {
 	    for (i = 0; i < this.places().length; i++) {
 	       	var searchString = this.placesFilterText();
 		    var place = this.places()[i];
 		    if (searchString) {
 		    	if (place.PlacesObj.name.toLowerCase().indexOf(searchString.toLowerCase()) === -1) {
+
 		    		place.searchMatched(false);
 		    		place.marker.setMap(null);
 		    	} else {
 		    		place.searchMatched(true);
 		    		place.marker.setMap(map);
 		    	}
+		    } else {
+		    	this.showAllPlaces();
 		    }
 	    }
     }, viewModel)
 
+    // bind viewModel to DOM
     ko.applyBindings(viewModel);
 
 
@@ -232,8 +232,8 @@ KNOCKOUT.JS VIEWMODEL
     These functions use Google's PlacesService API to
     search locations that match the string given by the user.
     *********************************************************/
+    // prepares and sends a search request to Google's PlacesService API.
     function searchPlaces(searchString) {
-        // prepares and sends a search request to Google's PlacesService API.
         var request = {
             location: map.getCenter(),
             radius: '500',
@@ -244,9 +244,10 @@ KNOCKOUT.JS VIEWMODEL
         service.textSearch(request, returnPlacesResults);
     }
 
+	// populates the newPlacesSearchResults array with the results
+	// from a Google PlacesService API call.
     function returnPlacesResults(results, status) {
-        // populates the newPlacesSearchResults array with the results
-        // from a Google PlacesService API call.
+        
         if (status == google.maps.places.PlacesServiceStatus.OK) {
             viewModel.newPlaceSearchResults.removeAll();
             for (var i = 0; i < results.length; i++) {
@@ -254,5 +255,4 @@ KNOCKOUT.JS VIEWMODEL
             }
         }
     }
-    /*************************************************************/
 }

@@ -63,7 +63,6 @@
 		<hr>
 
 		<input data-bind="textInput: placesFilterText" id="places-search-box" type="text" name="search-places" placeholder="&#128269; Search for a place or address">
-		<button data-bind="click: showAllPlaces">Show All</button>
 		
 		<ul id="places-list" data-bind="foreach: places">
 			<li data-bind="visible: $data.searchMatched">
