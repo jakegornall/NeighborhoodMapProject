@@ -8,6 +8,9 @@
 
 	<title>Neighborhood Map Project</title>
 
+	<!-- Latest compiled and minified Bootstrap CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
 	<!-- customized styles -->
     <link rel="stylesheet" type="text/css" href="static/css/styles.css">
 
@@ -17,6 +20,9 @@
    		integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
    		crossorigin="anonymous">
   	</script>
+
+  	<!-- Latest compiled and minified Bootstrap JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
   	<!-- Knockout.js -->
   	<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-min.js"></script>
@@ -42,7 +48,7 @@
 			<h1 data-bind="text: $data.PlacesObj.name"></h1>
 			<p data-bind="text: $data.PlacesObj.formatted_address"></p>
 		</div>
-		<h2></h2>
+		<button data-bind="visible: selectedPlace, click: modalIsOpen" data-toggle="modal" data-target="#MoreInfoModal">More Info</button>
 	</div>
 
 	<!-- New Place Search List -->
@@ -51,7 +57,7 @@
 			<img data-bind="attr: { src: $data.icon }">
 			<h1 data-bind="text: $data.name"></h1>
 			<h2 data-bind="text: $data.formatted_address"></h2>
-			<h2 data-bind="text: $data.rating"></h2>
+			<h2>Rating: <span data-bind="text: $data.rating"></span></h2>
 		</li>
 	</ul>
 
@@ -68,11 +74,28 @@
 			<li data-bind="visible: $data.searchMatched">
 				<h1 data-bind="text: $data.PlacesObj.name, click: $parent.goToPlace"></h1>
 				<p data-bind="text: $data.PlacesObj.formatted_address"></p>
-				<button data-bind="click: $parent.deletePlace">DELETE</button>
+				<button data-bind="visible: $data.PlacesObj.name !== 'Current Location',click: $parent.deletePlace">DELETE</button>
 			</li>
 		</ul>
 	</div>
 
+	<!-- More Info Modal -->
+	<div class="modal fade" id="MoreInfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  		<div class="modal-dialog" role="document">
+    		<div class="modal-content">
+	      		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        		<h4 class="modal-title" id="myModalLabel">More Info</h4>
+	      		</div>
+	      		<div class="modal-body">
+	        		...
+	      		</div>
+	      		<div class="modal-footer">
+	        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      		</div>
+    		</div>
+  		</div>
+	</div>
 	<script src="static/js/app.js"></script>
 </body>
 </html>

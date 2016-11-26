@@ -29,8 +29,6 @@ NEIGHBORHOOD MAP PROJECT
 //      - Google placesService API supporting functions
 
 
-
-
 /*****************************************
 CACHE REPEATEDLY ACCESSED OBJECTS/ELEMENTS
 ******************************************/
@@ -116,6 +114,11 @@ KNOCKOUT.JS VIEWMODEL
 //       in order to make changes to the map object.
     var viewModel = {
     	selectedPlace : ko.observable(null),
+    	modalIsOpen : function() {
+    		if (this.mainWindowState()) {
+    			this.mainWindowControl();
+    		}
+    	},
         // Main Window Controller
         mainWindowState : ko.observable(false),
         mainWindowControl : function() {
@@ -138,6 +141,9 @@ KNOCKOUT.JS VIEWMODEL
         newPlacesSearchValue : ko.observable(),
         searchNewPlaces : function() {
             searchPlaces(this.newPlacesSearchValue());
+            if (this.mainWindowState()) {
+            	this.mainWindowControl();
+            }
             $newPlaceSearchList.fadeIn();
         },
         addNewPlace : function(place) {
@@ -211,9 +217,19 @@ KNOCKOUT.JS VIEWMODEL
 		    var place = this.places()[i];
 		    if (searchString) {
 		    	if (place.PlacesObj.name.toLowerCase().indexOf(searchString.toLowerCase()) === -1) {
-
-		    		place.searchMatched(false);
-		    		place.marker.setMap(null);
+		    		if (place.PlacesObj.formatted_address) {
+		    			if (place.PlacesObj.formatted_address.toLowerCase().indexOf(searchString.toLowerCase()) === -1) {
+		    				place.searchMatched(false);
+		    				place.marker.setMap(null);
+		    			} else {
+		    				place.searchMatched(true);
+		    				place.marker.setMap(map);
+		    			}
+		    		} else {
+		    			place.searchMatched(false);
+		    			place.marker.setMap(null);
+		    		}
+		    		
 		    	} else {
 		    		place.searchMatched(true);
 		    		place.marker.setMap(map);
