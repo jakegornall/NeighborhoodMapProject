@@ -35,7 +35,7 @@ CACHE REPEATEDLY ACCESSED OBJECTS/ELEMENTS
 var $mainWindow = $('#main-ui-window-bottom');
 var mainWindowClosedPos = $mainWindow.offset();
 var $newPlaceTextbox = $('#new-place-textbox');
-var $newPlaceSearchList = $(".new-place-search-list");
+var $newPlaceSearchList = $("#new-place-search-list");
 
 
 /***************************

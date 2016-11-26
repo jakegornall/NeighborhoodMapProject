@@ -6,12 +6,9 @@ html, body {
 	font-family: 'Raleway', sans-serif;
 }
 
-#Mover {
-	position: fixed;
-	z-index: 9999;
-	top: 50%;
-	background-color: white;
-}
+h1, h2, h3, h4, h5, h6, p {
+	font-family: 'Raleway', sans-serif; !important
+} 
 
 #map {
 	width: 100%;
@@ -95,6 +92,7 @@ html, body {
 	right: 0px;
 	width: 70%;
 	background-color: white;
+	font-family: 'Raleway', sans-serif;
 	border-radius: 8px;
 	margin: auto;
 	padding: 5px;
@@ -116,6 +114,7 @@ html, body {
 
 #main-ui-window-bottom {
 	position: fixed;
+	font-family: 'Raleway', sans-serif;
 	opacity: .9;
 	z-index: 9997;
 	top: calc(100% - 50px);
@@ -136,12 +135,14 @@ html, body {
 	padding: 3px;
 	border: none;
 	border-radius: 3px;
+	font-family: 'Raleway', sans-serif;
 	background-color: #c4c4c4;
 	color: #7c7c7c;
 }
 
-.new-place-search-list {
+#new-place-search-list {
 	position: fixed;
+	font-family: 'Raleway', sans-serif;
 	display: none;
 	top: calc(5% + 40px);
 	left: 0px;
@@ -153,25 +154,31 @@ html, body {
 	background-color: white;
 	border-radius: 5px;
 	overflow-y: scroll;
-	z-index: 9997;
+	z-index: 9998;
 	-webkit-box-shadow: 0px 0px 25px -6px rgba(0,0,0,0.81);
     -moz-box-shadow: 0px 0px 25px -6px rgba(0,0,0,0.81);
     box-shadow: 0px 0px 25px -6px rgba(0,0,0,0.81);
 }
 
-.new-place-search-list li {
+#new-place-search-list li {
 	list-style: none;
 	margin: auto;
 	margin-top: 0px;
 	margin-bottom: 0px;
 	padding: 5px;
 	width: 90%;
-	font-size: 5px;
 	background-color: white;
 	border-bottom: 1px solid lightgrey;
 }
 
-.new-place-search-list img {
+#new-place-search-list h3 {
+	font-family: 'Raleway', sans-serif;
+	font-size: 12px;
+	margin-bottom: 0px;
+	margin-top: 0px;
+}
+
+#new-place-search-list img {
 	float: left;
 	margin: auto;
 	width: 40px;
@@ -193,7 +200,8 @@ html, body {
 	margin-bottom: 0px;
 	padding: 5px;
 	width: 90%;
-	font-size: 10px;
+	font-size: 2px;
+	font-family: 'Raleway', sans-serif;
 	background-color: white;
 	border-bottom: 1px solid lightgrey;
 
@@ -220,5 +228,6 @@ hr {
 
 #MoreInfoModal {
 	z-index: 9999;
+	font-family: 'Raleway', sans-serif;
 }
 
