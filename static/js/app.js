@@ -59,6 +59,7 @@ MODEL DEFINITIONS:
 ******************/
 function Place(PlacesObj, marker) {
 	// holds all the data for a single place.
+	this.id = PlacesObj.id;
     this.PlacesObj = PlacesObj;
     this.marker = marker;
     this.searchMatched = ko.observable(true);
@@ -170,19 +171,6 @@ KNOCKOUT.JS VIEWMODEL
 
         // Places search filter
         placesFilterText: ko.observable(),
-        filterLocations: ko.computed(function() {
-        	console.log("search triggered")
-	        for (i = 0; i < viewModel.places.length; i++) {
-	        	var searchString = viewModel.placesFilterText();
-		    	var place = viewModel.places[i];
-		    	console.log(place)
-		    	if (place.PlacesObj.name.indexOf(searchString) === -1 && place.PlacesObj.formatted_address.indexOf(searchString) === -1) {
-		    		place.searchMatched(false);
-		    	} else {
-		    		place.searchMatched(true);
-		    	}
-	    	}
-        }),
 
         // Places list event handling.
         goToPlace : function(place) {
@@ -190,32 +178,54 @@ KNOCKOUT.JS VIEWMODEL
         	map.panTo(place.PlacesObj.geometry.location);
         	viewModel.selectedPlace(place);
         },
-        deletePlace : function(place) {
-        	viewModel.places.pop(place);
-        	place.marker.setMap(null);
-        	if (viewModel.selectedPlace() === place) {
-        		viewModel.selectedPlace(null);
+        showAllPlaces : function() {
+        	for (i = 0; i < this.places().length; i++) {
+        		this.places()[i].searchMatched(true);
+        		this.places()[i].marker.setMap(map);
         	}
         }
     }
-    ko.applyBindings(viewModel);
+
+
+    /**********************
+    Deletes Place List Item
+    ***********************/
+    viewModel.deletePlace = function(place) {
+    	var id = place.id;
+        for (i = 0; i < viewModel.places().length; i++) {
+        	if (viewModel.places()[i].id === id) {
+        		console.log("CALLED")
+        		place.marker.setMap(null);
+        		viewModel.places.splice(i, 1);
+        		if (viewModel.selectedPlace() === place) {
+        			viewModel.selectedPlace(null);
+        		}
+        		break
+        	}
+        }
+    }
 
 
     /*************************************************
     filters places list as user types into search box.
     **************************************************/
-    // function filterLocations(searchString) {
-    // 	for (i = 0; i < viewModel.places.length; i++) {
-    // 		var place = viewModel.places[i];
-    // 		console.log(place)
-    // 		if (place.PlacesObj.name.indexOf(searchString) === -1 && place.PlacesObj.formatted_address.indexOf(searchString) === -1) {
-    // 			place.searchMatched = false;
-    // 		} else {
-    // 			place.searchMatched = true;
-    // 		}
-    // 	}
-    // };
-    // filterLocations(viewModel.placesFilterText());
+    viewModel.filterLocations = ko.computed(function() {
+	    for (i = 0; i < this.places().length; i++) {
+	       	var searchString = this.placesFilterText();
+		    var place = this.places()[i];
+		    if (searchString) {
+		    	if (place.PlacesObj.name.toLowerCase().indexOf(searchString.toLowerCase()) === -1) {
+		    		place.searchMatched(false);
+		    		place.marker.setMap(null);
+		    	} else {
+		    		place.searchMatched(true);
+		    		place.marker.setMap(map);
+		    	}
+		    }
+	    }
+    }, viewModel)
+
+    ko.applyBindings(viewModel);
 
 
     /********************************************************
