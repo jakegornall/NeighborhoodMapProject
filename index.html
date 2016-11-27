@@ -48,7 +48,7 @@
 			<h1><strong data-bind="text: $data.PlacesObj.name"></strong></h1>
 			<p data-bind="text: $data.PlacesObj.formatted_address"></p>
 		</div>
-		<button data-bind="visible: selectedPlace, click: modalIsOpen" data-toggle="modal" data-target="#MoreInfoModal">More Info</button>
+		<button class="btn btn-primary" data-bind="visible: selectedPlace, click: modalIsOpen" data-toggle="modal" data-target="#MoreInfoModal">More Info</button>
 	</div>
 
 	<!-- New Place Search List -->
@@ -72,9 +72,9 @@
 		
 		<ul id="places-list" data-bind="foreach: places">
 			<li data-bind="visible: $data.searchMatched">
-				<h1 data-bind="text: $data.PlacesObj.name, click: $parent.goToPlace"></h1>
+				<h1><strong data-bind="text: $data.PlacesObj.name, click: $parent.goToPlace"></strong></h1>
 				<p data-bind="text: $data.PlacesObj.formatted_address"></p>
-				<button data-bind="visible: $data.PlacesObj.name !== 'Current Location',click: $parent.deletePlace">DELETE</button>
+				<button class="btn btn-danger" data-bind="visible: $data.PlacesObj.name !== 'Current Location',click: $parent.deletePlace">DELETE</button>
 			</li>
 		</ul>
 	</div>
@@ -88,7 +88,7 @@
 	        		<h4 class="modal-title" id="myModalLabel">More Info</h4>
 	      		</div>
 	      		<div class="modal-body">
-	        		...
+	        		<img id="more-info-loader" src="static/images/ajax-loader.gif">
 	      		</div>
 	      		<div class="modal-footer">
 	        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

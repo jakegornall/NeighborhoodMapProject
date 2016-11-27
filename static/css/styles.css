@@ -10,6 +10,10 @@ h1, h2, h3, h4, h5, h6, p {
 	font-family: 'Raleway', sans-serif; !important
 } 
 
+h1 {
+	font-size: 20px;
+}
+
 #map {
 	width: 100%;
 	height: 100%;
@@ -109,7 +113,6 @@ h1, h2, h3, h4, h5, h6, p {
 
 #current-place button {
 	width: 100%;
-	height: 25px;
 }
 
 #main-ui-window-bottom {
@@ -200,11 +203,19 @@ h1, h2, h3, h4, h5, h6, p {
 	margin-bottom: 0px;
 	padding: 5px;
 	width: 90%;
-	font-size: 2px;
-	font-family: 'Raleway', sans-serif;
 	background-color: white;
 	border-bottom: 1px solid lightgrey;
 
+}
+
+#place-list li h1 {
+	font-family: 'Raleway', sans-serif;
+	font-size: 8px;
+}
+
+#place-list li p {
+	font-family: 'Raleway', sans-serif;
+	font-size: 8px;
 }
 
 .main-window-controller {
@@ -229,5 +240,10 @@ hr {
 #MoreInfoModal {
 	z-index: 9999;
 	font-family: 'Raleway', sans-serif;
+}
+
+#more-info-loader {
+	display: block;
+	margin: auto;
 }
 
