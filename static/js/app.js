@@ -20,6 +20,7 @@ NEIGHBORHOOD MAP PROJECT
 //  APIs:
 //  - Google Maps
 //  - Google PlacesService
+//  - Yelp API
 //
 //  THE CODE IS BROKEN INTO THE FOLLOWING SECTION (IN THIS ORDER AND HIERARCHY):
 //  - Cache Repeatedly Accessed Objects/Elements
@@ -29,6 +30,7 @@ NEIGHBORHOOD MAP PROJECT
 //      - Knockout.js ViewModel
 //      - ViewModel Extended Functions
 //      - Google placesService API supporting functions
+
 
 
 /*****************************************
@@ -53,31 +55,6 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
         'Error: Your browser doesn\'t support geolocation.');
 }
 
-// makes post call to Yelp and returns an access token.
-function getYelpAccessToken() {
-	var url = "https://api.yelp.com/oauth2/token";
-	var data = {
-		grant_type: "client_credentials",
-		client_id: "Cn8JlZk5S3buaXtfvtf2Pg",
-		client_secret: "eVBXSlQj7ybvhREZTlMMyoWnPEL2C1FLcKZLlIP05v6GYj2e8YaQNHfNREPI062V"
-	};
-	var ajaxCall = setTimeout(function() {
-		$.ajax({
-			type: "POST",
-			url: url,
-			data: data,
-			success: function(response) {
-				clearTimeout(ajaxCall);
-				return response;
-			},
-			failure: function() {
-				clearTimeout(ajaxCall);
-				console.log("Failed to retrieve access token...")
-			}
-		});
-	}, 7000);
-}
-var YelpAccessToken = getYelpAccessToken();
 
 /*****************
 MODEL DEFINITIONS:
@@ -145,6 +122,26 @@ KNOCKOUT.JS VIEWMODEL
     		if (this.mainWindowState()) {
     			this.mainWindowControl();
     		}
+            var address = viewModel.selectedPlace().PlacesObj.formatted_address;
+            var name = viewModel.selectedPlace().PlacesObj.name;
+            var data = {
+                    name: name,
+                    address: address
+                };
+            console.log(data)
+            $.ajax({
+                type: "GET",
+                url: Flask.url_for('yelpCallAPI'),
+                data: data,
+                dataType: "json",
+                success: function(response) {
+                    console.log("successful Yelp Call...")
+                    console.log(response)
+                },
+                failure: function() {
+                    console.log("Yelp is currently unavailable...")
+                }
+            });
     	},
         // Main Window Controller
         mainWindowState : ko.observable(false),
