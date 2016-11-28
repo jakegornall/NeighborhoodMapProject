@@ -11,6 +11,7 @@ NEIGHBORHOOD MAP PROJECT
 //  access a variety of information about each location via various APIs.
 //
 //  FRAMEWORKS:
+//  - Bootstrap (CSS and Javascript) => Modal
 //  - Knockout.js => MVVM
 //
 //  LIBRARIES:
@@ -26,6 +27,7 @@ NEIGHBORHOOD MAP PROJECT
 //  - Model Definitions
 //  - Google Map Function (Contains the viewModel and runs the app)
 //      - Knockout.js ViewModel
+//      - ViewModel Extended Functions
 //      - Google placesService API supporting functions
 
 
@@ -51,6 +53,31 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
         'Error: Your browser doesn\'t support geolocation.');
 }
 
+// makes post call to Yelp and returns an access token.
+function getYelpAccessToken() {
+	var url = "https://api.yelp.com/oauth2/token";
+	var data = {
+		grant_type: "client_credentials",
+		client_id: "Cn8JlZk5S3buaXtfvtf2Pg",
+		client_secret: "eVBXSlQj7ybvhREZTlMMyoWnPEL2C1FLcKZLlIP05v6GYj2e8YaQNHfNREPI062V"
+	};
+	var ajaxCall = setTimeout(function() {
+		$.ajax({
+			type: "POST",
+			url: url,
+			data: data,
+			success: function(response) {
+				clearTimeout(ajaxCall);
+				return response;
+			},
+			failure: function() {
+				clearTimeout(ajaxCall);
+				console.log("Failed to retrieve access token...")
+			}
+		});
+	}, 7000);
+}
+var YelpAccessToken = getYelpAccessToken();
 
 /*****************
 MODEL DEFINITIONS:
