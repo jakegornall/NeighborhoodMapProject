@@ -5,11 +5,12 @@ import httplib2
 import urllib
 import requests
 import json
+from yelp.client import Client
+from yelp.oauth1_authenticator import Oauth1Authenticator
+
 
 app = Flask(__name__)
 jsglue = JSGlue(app)
-
-
 
 
 def getYelpAccessToken():
@@ -30,16 +31,31 @@ def main():
 
 @app.route('/yelpCallAPI', methods=['GET'])
 def yelpCallAPI():
-    YelpResponseObject = getYelpAccessToken()
-    name = request.args.get('name')
-    address = request.args.get('address')
-    YelpAPIaddress = 'https://api.yelp.com/v3/businesses/search?term={{name}}&location={{address}}'  # noqa
+    try:
+        YelpResponseObject = getYelpAccessToken()
+    except:
+        return jsonify(status='false', message='Unable to get access token...')
 
-    url = YelpAPIaddress.format(name=name, address=address)
+    try:
+        name = request.args.get('name')
+        address = request.args.get('address')
+        latitude = request.args.get('latitude')
+        longitude = request.args.get('longitude')
+    except:
+        return jsonify(status='false', message='Error unpacking client data...')
 
-    response = requests.get(url, headers={'Authorization': YelpResponseObject['access_token']})
+    url = 'https://api.yelp.com/v3/businesses/search?term={name}&location={address}&latitude={latitude}&longitude={longitude}&limit=1'
+    url = url.format(name=name, address=address, latitude=latitude, longitude=longitude)
+
+    try:
+        response = requests.get(
+            url,
+            headers={'Authorization': 'bearer %s' % YelpResponseObject['access_token']}
+            )
+    except:
+        return jsonify(status='false', message='Error requesting data from Yelp...')
     
-    return jsonify(status='true', content=response)
+    return jsonify(status='true', content=json.loads(response.text))
 
 
 if __name__ == "__main__":

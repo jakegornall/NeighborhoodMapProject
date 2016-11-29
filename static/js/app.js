@@ -118,31 +118,55 @@ KNOCKOUT.JS VIEWMODEL
 //       in order to make changes to the map object.
     var viewModel = {
     	selectedPlace : ko.observable(null),
+        modalLoaderVisible: ko.observable(true),
+        modalErrorMsg: ko.observable(),
+        modalData: ko.observable(),
     	modalIsOpen : function() {
     		if (this.mainWindowState()) {
     			this.mainWindowControl();
     		}
-            var address = viewModel.selectedPlace().PlacesObj.formatted_address;
-            var name = viewModel.selectedPlace().PlacesObj.name;
-            var data = {
-                    name: name,
-                    address: address
-                };
-            console.log(data)
-            $.ajax({
-                type: "GET",
-                url: Flask.url_for('yelpCallAPI'),
-                data: data,
-                dataType: "json",
-                success: function(response) {
-                    console.log("successful Yelp Call...")
-                    console.log(response)
-                },
-                failure: function() {
-                    console.log("Yelp is currently unavailable...")
-                }
-            });
+            if (this.selectedPlace().PlacesObj.name !== 'Current Location') {
+                var address = this.selectedPlace().PlacesObj.formatted_address;
+                var latitude = this.selectedPlace().PlacesObj.geometry.location.lat();
+                var longitude = this.selectedPlace().PlacesObj.geometry.location.lng();
+                var name = this.selectedPlace().PlacesObj.name;
+                var data = {
+                        name: name,
+                        address: address,
+                        latitude: latitude,
+                        longitude: longitude
+                    };
+                $.ajax({
+                    type: "GET",
+                    url: Flask.url_for('yelpCallAPI'),
+                    data: data,
+                    dataType: "json",
+                    success: function(response) {
+                        viewModel.modalLoaderVisible(false);
+                        if (response.status === 'false') {
+                            viewModel.modalErrorMsg(response.message);
+                        } else if (response.content.businesses.length >= 1) {
+                            viewModel.modalData(response.content.businesses[0])
+                        } else {
+                            viewModel.modalErrorMsg("No data for this location...")
+                        }
+                    },
+                    failure: function() {
+                        console.log("Server is currently unavailable...")
+                        viewModel.modalLoaderVisible(false);
+                        viewModel.modalErrorMsg("Unable to connect to server. Make sure you are connected to the internet...")
+                    }
+                });
+            } else {
+                this.modalLoaderVisible(false);
+                this.modalErrorMsg("No data for this location...")
+            }
     	},
+        modalClosed: function() {
+            this.modalErrorMsg(null);
+            this.modalData(null);
+            this.modalLoaderVisible(true);
+        },
         // Main Window Controller
         mainWindowState : ko.observable(false),
         mainWindowControl : function() {

@@ -88,14 +88,23 @@
   		<div class="modal-dialog" role="document">
     		<div class="modal-content">
 	      		<div class="modal-header">
-	        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        		<button data-bind="click: modalClosed" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 	        		<h4 class="modal-title" id="myModalLabel">More Info</h4>
 	      		</div>
 	      		<div class="modal-body">
-	        		<img id="more-info-loader" src="{{url_for('static', filename='images/ajax-loader.gif')}}">
+	        		<img data-bind="visible: modalLoaderVisible" id="more-info-loader" src="{{url_for('static', filename='images/ajax-loader.gif')}}">
+	        		<p data-bind="text: modalErrorMsg"></p>
+	        		<div data-bind="with: modalData">
+	        			<h1 class="h1" data-bind="text: $data.name"></h1>
+	        			<img data-bind="visible: $data.image_url, attr: { src: $data.image_url }" width=100%>
+	        			<h2 class="h2">Phone: <span data-bind="text: $data.phone"></span></h2>
+	        			<h2 class="h2">Rating: <span data-bind="text: $data.rating"></span></h2>
+	        			<h2 class="h2">Price: <span data-bind="text: $data.price"></span></h2>
+	        			<h2 class="h2" data-bind="visible: $data.is_closed">CLOSED</h2>
+	        		</div>
 	      		</div>
 	      		<div class="modal-footer">
-	        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        		<button data-bind="click: modalClosed" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 	      		</div>
     		</div>
   		</div>
