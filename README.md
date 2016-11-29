@@ -60,7 +60,7 @@ This project uses a Python Flask server</p>
     ```
 3. If you have git install you can use "git clone https://github.com/jakegornall/NeighborhoodMapProject" to download the repository.
     - NOTE: if you don't have git, you can just download it.
-4. If you are already using port 5000, open server.py in the root directory and change the following code:
+4. If you are already using port 5000, open server.py in the root directory and change the following code:  
     ```python
     if __name__ == "__main__":
         app.run(debug=True, host='127.0.0.1', port=YOUR_DESIRED_PORT)
