@@ -5,8 +5,6 @@ import httplib2
 import urllib
 import requests
 import json
-from yelp.client import Client
-from yelp.oauth1_authenticator import Oauth1Authenticator
 
 
 app = Flask(__name__)
