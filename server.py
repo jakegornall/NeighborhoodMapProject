@@ -3,6 +3,7 @@ from flask import jsonify, request
 from flask_jsglue import JSGlue
 import httplib2
 import urllib
+import requests
 import json
 
 app = Flask(__name__)
@@ -29,16 +30,16 @@ def main():
 
 @app.route('/yelpCallAPI', methods=['GET'])
 def yelpCallAPI():
-    YELP_ACCESS_TOKEN = getYelpAccessToken()
+    YelpResponseObject = getYelpAccessToken()
     name = request.args.get('name')
     address = request.args.get('address')
     YelpAPIaddress = 'https://api.yelp.com/v3/businesses/search?term={{name}}&location={{address}}'  # noqa
 
     url = YelpAPIaddress.format(name=name, address=address)
-    h = httplib2.Http(".cache")
-    h.add_credentials('Bearer', YELP_ACCESS_TOKEN["access_token"])
-    response = h.request(url, 'GET')
-    return jsonify(status='true', content=response, token=YELP_ACCESS_TOKEN)
+
+    response = requests.get(url, headers={'Authorization': YelpResponseObject['access_token']})
+    
+    return jsonify(status='true', content=response)
 
 
 if __name__ == "__main__":
