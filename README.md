@@ -46,6 +46,11 @@ This project uses a Python Flask server</p>
     - Google Maps API: <a href="https://developers.google.com/maps/web/">Register Here</a>
         + Click on the "GET A KEY" button and follow the directions.
         + Open index.html, in the head tag, in the google maps api script tag, replace the current key in the url with your key.
+        ```html
+        <!-- Google Maps API -->
+        <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_GOES_HERE&callback=initMap&libraries=places"
+        async defer></script>
+        ```
     - Yelp API: <a href="https://www.yelp.com/developers/v2/manage_api_keys">Register Here</a>
         + When you have your app_id and your app_secret, create a new file in the root folder call "yelpSecrets.json"
         + Open "yelpSecrets.json" and create the following json object:
