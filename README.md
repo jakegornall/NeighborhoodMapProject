@@ -28,7 +28,7 @@ This project uses a Python Flask server</p>
 - Google PlacesService
 - Yelp API
 
-#### THE JAVASCRIPT CODE IS BROKEN INTO THE FOLLOWING SECTION (IN THIS ORDER AND HIERARCHY):  
+#### THE JAVASCRIPT CODE (/static/js/app.js) IS BROKEN INTO THE FOLLOWING SECTIONS (IN THIS ORDER AND HIERARCHY):  
 + Cache Repeatedly Accessed Objects/Elements  
 + Global Function Definitions  
 + Model Definitions  

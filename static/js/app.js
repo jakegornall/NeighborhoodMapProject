@@ -8,7 +8,7 @@ NEIGHBORHOOD MAP PROJECT
 //  DESCRIPTION: 
 //  At runtime, this application attempts to find the user's current location. 
 //  once found, the user is able to search and save nearby places as well as
-//  access a variety of information about each location via various APIs.
+//  access a variety of information about each location via Google and Yelp APIs.
 //
 //  FRAMEWORKS:
 //  - Bootstrap (CSS and Javascript) => Modal
@@ -16,13 +16,14 @@ NEIGHBORHOOD MAP PROJECT
 //
 //  LIBRARIES:
 //  - jQuery 3.1.1
+//  - Flask-JSGlue (extends flask functions to modularized javascript)
 //
 //  APIs:
 //  - Google Maps
 //  - Google PlacesService
 //  - Yelp API
 //
-//  THE CODE IS BROKEN INTO THE FOLLOWING SECTION (IN THIS ORDER AND HIERARCHY):
+//  THE CODE IS BROKEN INTO THE FOLLOWING SECTIONS (IN THIS ORDER AND HIERARCHY):
 //  - Cache Repeatedly Accessed Objects/Elements
 //  - Global Function Definitions
 //  - Model Definitions
@@ -36,10 +37,13 @@ NEIGHBORHOOD MAP PROJECT
 /*****************************************
 CACHE REPEATEDLY ACCESSED OBJECTS/ELEMENTS
 ******************************************/
+var $window = $(window);
 var $mainWindow = $('#main-ui-window-bottom');
-var mainWindowClosedPos = $mainWindow.offset();
 var $newPlaceTextbox = $('#new-place-textbox');
 var $newPlaceSearchList = $("#new-place-search-list");
+var windowBreakPoint = 1000;
+var mainWindowClosedPos = $window.height() - 50;
+var mainWindowClosedPos = mainWindowClosedPos.toString() + "px";
 
 
 /***************************
@@ -122,7 +126,7 @@ KNOCKOUT.JS VIEWMODEL
         modalErrorMsg: ko.observable(),
         modalData: ko.observable(),
     	modalIsOpen : function() {
-    		if (this.mainWindowState()) {
+    		if (this.mainWindowState() && $window.width() < windowBreakPoint) {
     			this.mainWindowControl();
     		}
             if (this.selectedPlace().PlacesObj.name !== 'Current Location') {
@@ -170,16 +174,18 @@ KNOCKOUT.JS VIEWMODEL
         // Main Window Controller
         mainWindowState : ko.observable(false),
         mainWindowControl : function() {
-            if (this.mainWindowState() === false) {
-                $mainWindow.animate({
-                    top: "25%"
-                });
-                this.mainWindowState(true);
-            } else {
-                $mainWindow.animate({
-                    top: mainWindowClosedPos.top
-                });
-                this.mainWindowState(false);
+            if ($window.width() < windowBreakPoint) {
+                if (this.mainWindowState() === false) {
+                    $mainWindow.animate({
+                        top: "25%"
+                    });
+                    this.mainWindowState(true);
+                } else {
+                    $mainWindow.animate({
+                        top: mainWindowClosedPos
+                    });
+                    this.mainWindowState(false);
+                }
             }
         },
 
@@ -189,7 +195,7 @@ KNOCKOUT.JS VIEWMODEL
         newPlacesSearchValue : ko.observable(),
         searchNewPlaces : function() {
             searchPlaces(this.newPlacesSearchValue());
-            if (this.mainWindowState()) {
+            if (this.mainWindowState() && $window.width() < windowBreakPoint) {
             	this.mainWindowControl();
             }
             $newPlaceSearchList.fadeIn();
@@ -228,8 +234,16 @@ KNOCKOUT.JS VIEWMODEL
 
         // Places list event handling.
         goToPlace : function(place) {
-        	viewModel.mainWindowControl();
+            if ($window.width() < windowBreakPoint) {
+                viewModel.mainWindowControl();
+            }
         	map.panTo(place.PlacesObj.geometry.location);
+            if (place.PlacesObj.name !== "Current Location") {
+                place.marker.setAnimation(google.maps.Animation.BOUNCE);
+                setTimeout(function() {
+                    place.marker.setAnimation(null);
+                }, 2000);    
+            }
         	viewModel.selectedPlace(place);
         },
         showAllPlaces : function() {
@@ -290,6 +304,20 @@ KNOCKOUT.JS VIEWMODEL
 
     // bind viewModel to DOM
     ko.applyBindings(viewModel);
+
+    // updates "mainWindowClosedPos" when widow is resized.
+    $window.resize(function() {
+        if ($window.width() < windowBreakPoint){
+            var top = $window.height() - 50;
+            mainWindowClosedPos = top.toString() + "px";
+            $mainWindow.css('top', mainWindowClosedPos);
+            if (viewModel.mainWindowState()) {
+                viewModel.mainWindowState(false);
+            }
+        } else {
+            $mainWindow.css('top', "0px");
+        }
+    });
 
 
     /********************************************************

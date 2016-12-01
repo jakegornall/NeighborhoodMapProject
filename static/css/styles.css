@@ -120,7 +120,6 @@ html, body {
 #main-ui-window-bottom {
 	position: fixed;
 	font-family: 'Raleway', sans-serif;
-	opacity: .9;
 	z-index: 9997;
 	top: calc(100% - 50px);
 	left: 0px;
@@ -176,6 +175,11 @@ html, body {
 	border-bottom: 1px solid lightgrey;
 }
 
+#new-place-search-list li:hover {
+	cursor: pointer;
+	background-color: aqua;
+}
+
 #new-place-search-list h3 {
 	font-family: 'Raleway', sans-serif;
 	font-size: 12px;
@@ -192,9 +196,9 @@ html, body {
 
 #places-list {
 	margin: 0px;
-	padding: 0px;
+	padding: 5px;
 	width: 100%;
-	height: 90%;
+	height: 85%;
 	overflow-y: scroll;
 }
 
@@ -208,6 +212,11 @@ html, body {
 	background-color: white;
 	border-bottom: 1px solid lightgrey;
 
+}
+
+#places-list li:hover {
+	background-color: aqua;
+	cursor: pointer;
 }
 
 #place-list li h1 {
@@ -224,6 +233,9 @@ html, body {
 	width: 100%;
 	margin: 0px;
 	padding: 0px;
+}
+.main-window-controller:hover {
+	cursor: pointer;
 }
 
 .grab-bar {
@@ -249,3 +261,37 @@ hr {
 	margin: auto;
 }
 
+@media screen and (min-width: 1000px) {
+	#main-ui-window-bottom {
+		left: 0px;
+		top: 0px;
+		width: 25%;
+		height: 100%;
+		border-radius: 0px;
+		opacity: 100;
+	}
+	.main-window-controller, .grab-bar {
+		display: none;
+	}
+	#new-place-input {
+		left: 25%;
+		right: 0px;
+		width: auto;
+		margin: auto;
+	}
+	#new-place-textbox {
+		width: 45%;
+	}
+	#current-place {
+		left: 25%;
+		right: 0px;
+		width: 30%;
+		margin: auto;
+	}
+	#new-place-search-list {
+		left: 25%;
+		right: 0px;
+		width: 45%;
+		margin: auto;
+	}
+}

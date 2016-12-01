@@ -40,19 +40,27 @@ def yelpCallAPI():
         latitude = request.args.get('latitude')
         longitude = request.args.get('longitude')
     except:
-        return jsonify(status='false', message='Error unpacking client data...')
+        return jsonify(
+            status='false',
+            message='Error unpacking client data...')
 
-    url = 'https://api.yelp.com/v3/businesses/search?term={name}&location={address}&latitude={latitude}&longitude={longitude}&limit=1'
-    url = url.format(name=name, address=address, latitude=latitude, longitude=longitude)
+    url = 'https://api.yelp.com/v3/businesses/search?term={name}&location={address}&latitude={latitude}&longitude={longitude}&limit=1'  # noqa
+    url = url.format(
+        name=name,
+        address=address,
+        latitude=latitude,
+        longitude=longitude)
 
     try:
         response = requests.get(
             url,
-            headers={'Authorization': 'bearer %s' % YelpResponseObject['access_token']}
+            headers={'Authorization': 'bearer %s' % YelpResponseObject['access_token']}  # noqa
             )
     except:
-        return jsonify(status='false', message='Error requesting data from Yelp...')
-    
+        return jsonify(
+            status='false',
+            message='Error requesting data from Yelp...')
+
     return jsonify(status='true', content=json.loads(response.text))
 
 

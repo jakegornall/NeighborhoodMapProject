@@ -75,10 +75,10 @@
 		<input data-bind="textInput: placesFilterText" id="places-search-box" type="text" name="search-places" placeholder="&#128269; Search for a place or address">
 		
 		<ul id="places-list" data-bind="foreach: places">
-			<li data-bind="visible: $data.searchMatched">
-				<h1><strong data-bind="text: $data.PlacesObj.name, click: $parent.goToPlace"></strong></h1>
+			<li data-bind="visible: $data.searchMatched, click: $parent.goToPlace">
+				<h1 class="h1"><strong data-bind="text: $data.PlacesObj.name"></strong></h1>
 				<p data-bind="text: $data.PlacesObj.formatted_address"></p>
-				<button class="btn btn-danger" data-bind="visible: $data.PlacesObj.name !== 'Current Location',click: $parent.deletePlace">DELETE</button>
+				<button class="btn btn-danger btn-xs" data-bind="visible: $data.PlacesObj.name !== 'Current Location',click: $parent.deletePlace">DELETE</button>
 			</li>
 		</ul>
 	</div>
@@ -96,7 +96,7 @@
 	        		<p data-bind="text: modalErrorMsg"></p>
 	        		<div data-bind="with: modalData">
 	        			<h1 class="h1" data-bind="text: $data.name"></h1>
-	        			<img data-bind="visible: $data.image_url, attr: { src: $data.image_url }" width=100%>
+	        			<img data-bind="visible: $data.image_url, attr: { src: $data.image_url }" height="200px">
 	        			<h2 class="h2">Phone: <span data-bind="text: $data.phone"></span></h2>
 	        			<h2 class="h2">Rating: <span data-bind="text: $data.rating"></span></h2>
 	        			<h2 class="h2">Price: <span data-bind="text: $data.price"></span></h2>
