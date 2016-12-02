@@ -347,4 +347,9 @@ KNOCKOUT.JS VIEWMODEL
             }
         }
     }
+    // initialize with 5 pizza places.
+    searchPlaces("pizza");
+    for (i = 0; i < 5; i++) {
+        viewModel.addNewPlace(viewModel.newPlaceSearchResults()[i]);
+    }
 }

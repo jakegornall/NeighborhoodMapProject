@@ -34,6 +34,9 @@
   	<!-- Google Maps API -->
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByL-V9JZay1zkJLILE-7aXma_JGOtQ0YA&callback=initMap&libraries=places"
 	    async defer></script>
+
+	<!-- app.js -->
+	<script src="{{url_for('static', filename='js/app.js')}}"></script>
 </head>
 <body>
 
@@ -109,6 +112,5 @@
     		</div>
   		</div>
 	</div>
-	<script src="{{url_for('static', filename='js/app.js')}}"></script>
 </body>
 </html>
