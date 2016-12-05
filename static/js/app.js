@@ -34,9 +34,9 @@ NEIGHBORHOOD MAP PROJECT
 
 
 
-/*****************************************
-CACHE REPEATEDLY ACCESSED OBJECTS/ELEMENTS
-******************************************/
+/****************
+GLOBALS VARIABLES
+*****************/
 var windowBreakPoint = 1000;
 var mainWindowClosedPosCalc = $(window).height() - 50;
 var mainWindowClosedPos = mainWindowClosedPosCalc.toString() + "px";
