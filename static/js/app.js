@@ -37,12 +37,8 @@ NEIGHBORHOOD MAP PROJECT
 /*****************************************
 CACHE REPEATEDLY ACCESSED OBJECTS/ELEMENTS
 ******************************************/
-var $window = $(window);
-var $mainWindow = $('#main-ui-window-bottom');
-var $newPlaceTextbox = $('#new-place-textbox');
-var $newPlaceSearchList = $("#new-place-search-list");
 var windowBreakPoint = 1000;
-var mainWindowClosedPosCalc = $window.height() - 50;
+var mainWindowClosedPosCalc = $(window).height() - 50;
 var mainWindowClosedPos = mainWindowClosedPosCalc.toString() + "px";
 
 
@@ -129,7 +125,7 @@ KNOCKOUT.JS VIEWMODEL
         // server which makes a request to yelp using the client id and secret.
         // The server returns Yelp data for the currently selected place.
     	modalIsOpen : function() {
-    		if (this.mainWindowState() && $window.width() < windowBreakPoint) {
+    		if (this.mainWindowState() && $(window).width() < windowBreakPoint) {
     			this.mainWindowControl();
     		}
             if (this.selectedPlace().PlacesObj.name !== 'Current Location') {
@@ -177,7 +173,7 @@ KNOCKOUT.JS VIEWMODEL
         // Main Window Controller
         mainWindowState : ko.observable(false),
         mainWindowControl : function() {
-            if ($window.width() < windowBreakPoint) {
+            if ($(window).width() < windowBreakPoint) {
                 if (this.mainWindowState()) {
                     $('#main-ui-window-bottom').animate({
                         top: mainWindowClosedPos
@@ -198,13 +194,13 @@ KNOCKOUT.JS VIEWMODEL
         newPlacesSearchValue : ko.observable(),
         searchNewPlaces : function() {
             searchPlaces(this.newPlacesSearchValue());
-            if (this.mainWindowState() && $window.width() < windowBreakPoint) {
+            if (this.mainWindowState() && $(window).width() < windowBreakPoint) {
             	this.mainWindowControl();
             }
-            $newPlaceSearchList.fadeIn();
+            $("#new-place-search-list").fadeIn();
         },
         addNewPlace : function(place) {
-            $newPlaceSearchList.fadeOut();
+            $("#new-place-search-list").fadeOut();
 
             var Latlng = place.geometry.location;
 
@@ -237,7 +233,7 @@ KNOCKOUT.JS VIEWMODEL
 
         // Places list event handling.
         goToPlace : function(place) {
-            if ($window.width() < windowBreakPoint) {
+            if ($(window).width() < windowBreakPoint) {
                 viewModel.mainWindowControl();
             }
         	map.panTo(place.PlacesObj.geometry.location);
@@ -309,16 +305,16 @@ KNOCKOUT.JS VIEWMODEL
     ko.applyBindings(viewModel);
 
     // updates "mainWindowClosedPos" when widow is resized.
-    $window.resize(function() {
-        if ($window.width() < windowBreakPoint){
-            var top = $window.height() - 50;
+    $(window).resize(function() {
+        if ($(window).width() < windowBreakPoint){
+            var top = $(window).height() - 50;
             mainWindowClosedPos = top.toString() + "px";
-            $mainWindow.css('top', mainWindowClosedPos);
+            $('#main-ui-window-bottom').css('top', mainWindowClosedPos);
             if (viewModel.mainWindowState()) {
                 viewModel.mainWindowState(false);
             }
         } else {
-            $mainWindow.css('top', "0px");
+            $('#main-ui-window-bottom').css('top', "0px");
         }
     });
 
