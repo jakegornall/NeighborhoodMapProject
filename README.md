@@ -22,6 +22,8 @@ This project uses a Python Flask server</p>
 - Python 2.7+
 - Flask-JSGlue
 - Flask
+- requests
+- httplib2
 
 #### APIs:  
 - Google Maps
@@ -39,10 +41,12 @@ This project uses a Python Flask server</p>
 
 ## HOW TO RUN THIS PROJECT:
 1. If you haven't already, install all above listed dependencies.
-    - **If you already have Python installed, you can navigate to the root directory and run the command "pip install -r requirements.txt". If successful, you now have all dependencies.
+    - If you already have Python installed, you can navigate to the root directory and run the command "pip install -r requirements.txt". If successful, you now have all dependencies.
     - Python: <a href="https://www.python.org/downloads/">Install Here</a>
     - Flask: <a href="http://flask.pocoo.org/docs/0.11/installation/">Install Here</a>
     - Flask-JSGlue: <a href="http://stewartjpark.com/Flask-JSGlue/">Install Here</a>
+    - requests (use the command "pip install requests")
+    - httplib2 (use the command "pip install httplib2")
 2. You will also need to register a new app with Google Maps API and with Yelp API. **NOTE: take note of your ID and Secret in the Yelp API.**
     - Google Maps API: <a href="https://developers.google.com/maps/web/">Register Here</a>
         + Click on the "GET A KEY" button and follow the directions.

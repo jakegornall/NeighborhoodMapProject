@@ -42,8 +42,8 @@ var $mainWindow = $('#main-ui-window-bottom');
 var $newPlaceTextbox = $('#new-place-textbox');
 var $newPlaceSearchList = $("#new-place-search-list");
 var windowBreakPoint = 1000;
-var mainWindowClosedPos = $window.height() - 50;
-var mainWindowClosedPos = mainWindowClosedPos.toString() + "px";
+var mainWindowClosedPosCalc = $window.height() - 50;
+var mainWindowClosedPos = mainWindowClosedPosCalc.toString() + "px";
 
 
 /***************************
@@ -125,6 +125,9 @@ KNOCKOUT.JS VIEWMODEL
         modalLoaderVisible: ko.observable(true),
         modalErrorMsg: ko.observable(),
         modalData: ko.observable(),
+        // When user clicks the More Info button, this code sends a request to the
+        // server which makes a request to yelp using the client id and secret.
+        // The server returns Yelp data for the currently selected place.
     	modalIsOpen : function() {
     		if (this.mainWindowState() && $window.width() < windowBreakPoint) {
     			this.mainWindowControl();
@@ -175,16 +178,16 @@ KNOCKOUT.JS VIEWMODEL
         mainWindowState : ko.observable(false),
         mainWindowControl : function() {
             if ($window.width() < windowBreakPoint) {
-                if (this.mainWindowState() === false) {
-                    $mainWindow.animate({
-                        top: "25%"
-                    });
-                    this.mainWindowState(true);
-                } else {
+                if (this.mainWindowState()) {
                     $mainWindow.animate({
                         top: mainWindowClosedPos
                     });
                     this.mainWindowState(false);
+                } else {
+                    $mainWindow.animate({
+                        top: "25%"
+                    });
+                    this.mainWindowState(true);
                 }
             }
         },
@@ -339,7 +342,6 @@ KNOCKOUT.JS VIEWMODEL
 	// populates the newPlacesSearchResults array with the results
 	// from a Google PlacesService API call.
     function returnPlacesResults(results, status) {
-        
         if (status == google.maps.places.PlacesServiceStatus.OK) {
             viewModel.newPlaceSearchResults.removeAll();
             for (var i = 0; i < results.length; i++) {
@@ -348,8 +350,14 @@ KNOCKOUT.JS VIEWMODEL
         }
     }
     // initialize with 5 pizza places.
-    searchPlaces("pizza");
-    for (i = 0; i < 5; i++) {
-        viewModel.addNewPlace(viewModel.newPlaceSearchResults()[i]);
-    }
+    setTimeout(function() {
+        searchPlaces("food");
+    }, 2000);
+
+    setTimeout(function() {
+        items = viewModel.newPlaceSearchResults()
+        for (var i = 0; i < 5; i++) {
+            viewModel.addNewPlace(items[i]);
+        }
+    }, 4000);
 }
