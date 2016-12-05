@@ -179,12 +179,12 @@ KNOCKOUT.JS VIEWMODEL
         mainWindowControl : function() {
             if ($window.width() < windowBreakPoint) {
                 if (this.mainWindowState()) {
-                    $mainWindow.animate({
+                    $('#main-ui-window-bottom').animate({
                         top: mainWindowClosedPos
                     });
                     this.mainWindowState(false);
                 } else {
-                    $mainWindow.animate({
+                    $('#main-ui-window-bottom').animate({
                         top: "25%"
                     });
                     this.mainWindowState(true);
