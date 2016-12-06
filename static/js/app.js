@@ -154,7 +154,7 @@ KNOCKOUT.JS VIEWMODEL
                             viewModel.modalErrorMsg("No data for this location...")
                         }
                     },
-                    failure: function() {
+                    error: function() {
                         console.log("Server is currently unavailable...")
                         viewModel.modalLoaderVisible(false);
                         viewModel.modalErrorMsg("Unable to connect to server. Make sure you are connected to the internet...")
@@ -190,6 +190,11 @@ KNOCKOUT.JS VIEWMODEL
 
         // New Places Search Event Handling.
         newPlaceSearchResults : ko.observableArray(),
+        searchErrorMsg : ko.observable(),
+        closeSearchResults : function() {
+            $('#new-place-search-results').fadeOut();
+            this.searchErrorMsg(null);
+        },
         places : ko.observableArray(),
         newPlacesSearchValue : ko.observable(),
         searchNewPlaces : function() {
@@ -197,10 +202,10 @@ KNOCKOUT.JS VIEWMODEL
             if (this.mainWindowState() && $(window).width() < windowBreakPoint) {
             	this.mainWindowControl();
             }
-            $("#new-place-search-list").fadeIn();
+            $("#new-place-search-results").fadeIn();
         },
         addNewPlace : function(place) {
-            $("#new-place-search-list").fadeOut();
+            $("#new-place-search-results").fadeOut();
 
             var Latlng = place.geometry.location;
 
@@ -218,7 +223,7 @@ KNOCKOUT.JS VIEWMODEL
                 marker.setAnimation(google.maps.Animation.BOUNCE);
                 setTimeout(function() {
                     marker.setAnimation(null);
-                }, 2000);
+                }, 1400);
             });
 
             viewModel.places.push(newPlace);
@@ -241,7 +246,7 @@ KNOCKOUT.JS VIEWMODEL
                 place.marker.setAnimation(google.maps.Animation.BOUNCE);
                 setTimeout(function() {
                     place.marker.setAnimation(null);
-                }, 2000);    
+                }, 1400);    
             }
         	viewModel.selectedPlace(place);
         },
@@ -343,6 +348,9 @@ KNOCKOUT.JS VIEWMODEL
             for (var i = 0; i < results.length; i++) {
                 viewModel.newPlaceSearchResults.push(results[i]);
             }
+        } else {
+            viewModel.newPlaceSearchResults.removeAll();
+            viewModel.searchErrorMsg("Google API currently unavailable...");
         }
     }
     // initialize with 5 pizza places.

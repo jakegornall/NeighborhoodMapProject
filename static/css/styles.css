@@ -144,7 +144,7 @@ html, body {
 	color: #7c7c7c;
 }
 
-#new-place-search-list {
+#new-place-search-results {
 	position: fixed;
 	font-family: 'Raleway', sans-serif;
 	display: none;
@@ -157,11 +157,17 @@ html, body {
 	padding: 5px;
 	background-color: white;
 	border-radius: 5px;
-	overflow-y: scroll;
 	z-index: 9998;
+	overflow-y: scroll;
 	-webkit-box-shadow: 0px 0px 25px -6px rgba(0,0,0,0.81);
     -moz-box-shadow: 0px 0px 25px -6px rgba(0,0,0,0.81);
     box-shadow: 0px 0px 25px -6px rgba(0,0,0,0.81);
+}
+
+#new-place-search-list {
+	width: 90%;
+	margin: auto;
+	padding: 5px;
 }
 
 #new-place-search-list li {
