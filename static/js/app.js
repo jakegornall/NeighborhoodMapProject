@@ -56,6 +56,13 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 }
 
 
+function GoogleMapsLoadError() {
+    $("body").text(
+        "Unable to load Google Maps. Please make sure you are connected " + 
+        "to the internet, clear your cache, and refresh the page...");
+}
+
+
 /*****************
 MODEL DEFINITIONS:
 ******************/

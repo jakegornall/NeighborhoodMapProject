@@ -15,27 +15,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 	<!-- customized styles -->
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/styles.css')}}">
-
-    <!-- latest minified jQuery 3.x -->
-    <script
-   		src="https://code.jquery.com/jquery-3.1.1.min.js"
-   		integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-   		crossorigin="anonymous">
-  	</script>
-
-  	<!-- Latest compiled and minified Bootstrap JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-  	<!-- Knockout.js -->
-  	<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-min.js"></script>
-
-  	<!-- app.js -->
-	<script src="{{url_for('static', filename='js/app.js')}}"></script>
-
-  	<!-- Google Maps API -->
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByL-V9JZay1zkJLILE-7aXma_JGOtQ0YA&callback=initMap&libraries=places"
-	    async defer></script>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}">
 </head>
 <body>
 
@@ -51,31 +31,35 @@
 	<!-- Currently Selected Place Info -->
 	<div id="current-place">
 		<div data-bind="with: selectedPlace">
-			<p>This app is powered by: Google Maps API</p>
-			<hr>
 			<h1><strong data-bind="text: $data.PlacesObj.name"></strong></h1>
 			<p data-bind="text: $data.PlacesObj.formatted_address"></p>
 		</div>
 		<button class="btn btn-primary" data-bind="visible: selectedPlace, click: modalIsOpen" data-toggle="modal" data-target="#MoreInfoModal">More Info</button>
+		<p>This app is powered by: Google Maps API</p>
 	</div>
 
 	<!-- New Place Search List -->
 	<div id="new-place-search-results">
+		<h3>Results</h3>
+		<hr>
 		<p data-bind="text: searchErrorMsg"></p>
-		<ul id="new-place-search-list" data-bind="foreach: newPlaceSearchResults">
-			<li data-bind="click: $parent.addNewPlace">
-				<img data-bind="attr: { src: $data.icon }">
-				<h3><strong data-bind="text: $data.name"></strong></h3>
-				<h3 data-bind="text: $data.formatted_address"></h3>
-				<h3>Rating: <span data-bind="text: $data.rating"></span></h3>
-			</li>
-		</ul>
+		<div id="new-place-search-results-container">
+			<ul id="new-place-search-list" data-bind="foreach: newPlaceSearchResults">
+				<li data-bind="click: $parent.addNewPlace">
+					<img data-bind="attr: { src: $data.icon }">
+					<h3><strong data-bind="text: $data.name"></strong></h3>
+					<h3 data-bind="text: $data.formatted_address"></h3>
+					<h3>Rating: <span data-bind="text: $data.rating"></span></h3>
+				</li>
+			</ul>
+		</div>
+		<hr>
 		<button class="btn btn-xs btn-default" data-bind="click: closeSearchResults">Close</button>
 	</div>
 	
 
 	<!-- Main UI Window -->
-	<div id="main-ui-window-bottom">
+	<aside id="main-ui-window-bottom">
 		<div class="main-window-controller" data-bind="click: mainWindowControl">
 			<div class="grab-bar">Click To Open Window</div>
 		</div>
@@ -90,7 +74,7 @@
 				<button class="btn btn-danger btn-xs" data-bind="visible: $data.PlacesObj.name !== 'Current Location',click: $parent.deletePlace">DELETE</button>
 			</li>
 		</ul>
-	</div>
+	</aside>
 
 	<!-- More Info Modal -->
 	<div class="modal fade" id="MoreInfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -119,5 +103,25 @@
     		</div>
   		</div>
 	</div>
+
+	<!-- latest minified jQuery 3.x -->
+    <script
+   		src="https://code.jquery.com/jquery-3.1.1.min.js"
+   		integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+   		crossorigin="anonymous">
+  	</script>
+
+  	<!-- Latest compiled and minified Bootstrap JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+  	<!-- Knockout.js -->
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-min.js"></script>
+
+  	<!-- app.js -->
+	<script src="{{url_for('static', filename='js/app.js')}}"></script>
+
+  	<!-- Google Maps API -->
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByL-V9JZay1zkJLILE-7aXma_JGOtQ0YA&callback=initMap&libraries=places"
+	    async defer onerror="GoogleMapsLoadError()"></script>
 </body>
 </html>
